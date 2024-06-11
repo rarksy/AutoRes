@@ -3,10 +3,10 @@
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
 #include <glfw/glfw3.h>
-
+#include <Windows.h>
 #include "menu/menu.h"
 
-int main(int argc, char* argv[])
+int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int)
 {
     if (!glfwInit())
         throw std::exception("failed to init glfw");
@@ -34,8 +34,11 @@ int main(int argc, char* argv[])
     }
 
     be.active = false;
-
+    
     glfwTerminate();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui::DestroyContext();
     
     return 0;
 }
