@@ -38,7 +38,7 @@ void menu::render(backend& be)
 void menu::show(backend& be)
 {
     ImGui::SetNextWindowPos({0, 0});
-    ImGui::SetNextWindowSize({static_cast<float>(be.window_size_x), static_cast<float>(be.window_size_y)} );
+    ImGui::SetNextWindowSize({static_cast<float>(be.window_size_x), static_cast<float>(be.window_size_y)});
     ImGui::Begin("AutoRes++", nullptr, flags);
 
     if (ImGui::Button("Add New Instance"))
@@ -87,6 +87,19 @@ void menu::show(backend& be)
             
             ImGui::CloseCurrentPopup();
         }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Nevermind"))
+        {
+            label.clear();
+            exe_path.clear();
+            exe_name.clear();
+            res_x = be.default_resolution.x;
+            res_y = be.default_resolution.y;
+            
+            ImGui::CloseCurrentPopup();
+        }
         
         ImGui::EndPopup();
     }
@@ -95,38 +108,40 @@ void menu::show(backend& be)
 
     auto& all_instances = be.all_instances;
     
-    const size_t instances_size = all_instances.size();
-    for (int i = 0; i < instances_size; i++)
+    for (int i = 0; i < all_instances.size(); i++)
     {
         auto& instance = all_instances[i];
         
         const std::string instance_child_label = "instance" + std::to_string(i);
-        ImGui::BeginChild(instance_child_label.c_str(), {0, 50}, true);
-
-        ImGui::BeginDisabled();
+        ImGui::BeginChild(instance_child_label.c_str(), {0, 45}, true);
+        
         ImGui::SetNextItemWidth(100.F);
         const std::string instance_label = "##label" + std::to_string(i);
-        ImGui::InputTextWithHint(instance_label.c_str(), "Label", &instance.label);
-        ImGui::EndDisabled();
+        if (ImGui::InputTextWithHint(instance_label.c_str(), "Label", &instance.label))
+            be.update_instance(i);
         
         ImGui::SameLine();
 
         ImGui::SetNextItemWidth(200.F);
+        ImGui::BeginDisabled();
         const std::string instance_exe_path = "##exe" + std::to_string(i);
-        if (ImGui::InputTextWithHint(instance_exe_path.c_str(), "Executable Directory", &instance.exe_path))
+        if (ImGui::InputTextWithHint(instance_exe_path.c_str(), "Executable", &instance.exe_name))
             be.update_instance(i);
+        ImGui::EndDisabled();
 
         ImGui::SameLine();
 
         if (ImGui::Button("..."))
         {
-            be.all_instances[i].exe_path = ml::open_file_dialog();
+            instance.exe_path = ml::open_file_dialog();
+            instance.exe_name = instance.exe_path.filename().string();
+            
             be.update_instance(i);
         }
 
         ImGui::SameLine();
 
-        ImGui::SetNextItemWidth(40.F);
+        ImGui::SetNextItemWidth(45.F);
         const std::string instance_resx_path = "##resx" + std::to_string(i);
         if (ImGui::InputInt(instance_resx_path.c_str(), &all_instances[i].target_resolution.x, NULL))
             be.update_instance(i);
@@ -137,7 +152,7 @@ void menu::show(backend& be)
 
         ImGui::SameLine();
 
-        ImGui::SetNextItemWidth(40.F);
+        ImGui::SetNextItemWidth(45.F);
         const std::string instance_resy_path = "##resy" + std::to_string(i);
         if (ImGui::InputInt(instance_resy_path.c_str(), &all_instances[i].target_resolution.y, NULL))
             be.update_instance(i);

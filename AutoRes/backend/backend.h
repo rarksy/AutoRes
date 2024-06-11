@@ -13,7 +13,7 @@ private:
         bool running = false;
         
         std::string label;
-        std::string exe_path;
+        std::filesystem::path exe_path;
         std::string exe_name;
 
         vec2 target_resolution;

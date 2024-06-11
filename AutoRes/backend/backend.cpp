@@ -41,8 +41,7 @@ void backend::application_detection()
     det_thread.detach();
 }
 
-void backend::load_instances()
-{
+void backend::load_instances() {
     std::ifstream file(this->exe_directory.string() + this->instances_location);
 
     if (!file.is_open())
@@ -54,7 +53,8 @@ void backend::load_instances()
     {
         instance inst;
         inst.label = item["label"];
-        inst.exe_path = item["exe_path"];
+        const std::string exe_path = item["exe_path"];
+        inst.exe_path = std::filesystem::path(exe_path);
         inst.exe_name = item["exe_name"];
         inst.target_resolution.x = item["res_x"];
         inst.target_resolution.y = item["res_y"];
@@ -62,8 +62,7 @@ void backend::load_instances()
     }
 }
 
-void backend::add_new_instance(const std::string& label, const std::string& exe_path, const std::string& exe_name, const int& res_x, const int& res_y)
-{
+void backend::add_new_instance(const std::string& label, const std::string& exe_path, const std::string& exe_name, const int& res_x, const int& res_y) {
     instance new_instance;
     new_instance.label = label;
     new_instance.exe_path = exe_path;
@@ -73,40 +72,52 @@ void backend::add_new_instance(const std::string& label, const std::string& exe_
 
     all_instances.push_back(new_instance);
 
+    // Update JSON data with integer index
     nlohmann::json data;
+    for (size_t i = 0; i < all_instances.size(); ++i) {
+        data[i]["label"] = all_instances[i].label;
+        data[i]["exe_path"] = all_instances[i].exe_path;
+        data[i]["exe_name"] = all_instances[i].exe_name;
+        data[i]["res_x"] = all_instances[i].target_resolution.x;
+        data[i]["res_y"] = all_instances[i].target_resolution.y;
+    }
 
-    data[label]["label"] = label;
-    data[label]["exe_path"] = exe_path;
-    data[label]["exe_name"] = exe_name;
-    data[label]["res_x"] = res_x;
-    data[label]["res_y"] = res_y;
+    ml::json_write_data(this->exe_directory.string() + this->instances_location, data);
+}
+
+void backend::update_instance(const int& index) {
+    nlohmann::json data = ml::json_get_data_from_file(this->exe_directory.string() + this->instances_location);
+
+    if (index >= 0 && index < all_instances.size()) {
+        const auto& instance = all_instances[index];
+        data[index]["label"] = instance.label;
+        data[index]["exe_path"] = instance.exe_path;
+        data[index]["exe_name"] = std::filesystem::path(instance.exe_path).filename();
+        data[index]["res_x"] = instance.target_resolution.x;
+        data[index]["res_y"] = instance.target_resolution.y;
+    }
 
     ml::json_write_data(this->exe_directory.string() + this->instances_location, data);
 }
 
-void backend::update_instance(const int& index)
-{
+void backend::remove_instance(const int& index) {
     nlohmann::json data = ml::json_get_data_from_file(this->exe_directory.string() + this->instances_location);
 
-    const auto instance = this->all_instances[index];
+    if (index >= 0 && index < all_instances.size()) {
+        data.erase(index);
+        this->all_instances.erase(this->all_instances.begin() + index);
 
-    data[instance.label]["exe_path"] = instance.exe_path;
-    data[instance.label]["exe_name"] = std::filesystem::path(instance.exe_path).filename();
-    data[instance.label]["res_x"] = instance.target_resolution.x;
-    data[instance.label]["res_y"] = instance.target_resolution.y;
+        // Update JSON data after removal
+        for (size_t i = 0; i < all_instances.size(); ++i) {
+            data[i]["label"] = all_instances[i].label;
+            data[i]["exe_path"] = all_instances[i].exe_path;
+            data[i]["exe_name"] = all_instances[i].exe_name;
+            data[i]["res_x"] = all_instances[i].target_resolution.x;
+            data[i]["res_y"] = all_instances[i].target_resolution.y;
+        }
 
-
-    ml::json_write_data(this->exe_directory.string() + this->instances_location, data);
-}
-void backend::remove_instance(const int& index)
-{
-    nlohmann::json data = ml::json_get_data_from_file(this->exe_directory.string() + this->instances_location);
-    const auto instance = this->all_instances[index];
-
-    data.erase(instance.label);
-    this->all_instances.erase(this->all_instances.begin() + index);
-
-    ml::json_write_data(this->exe_directory.string() + this->instances_location, data);
+        ml::json_write_data(this->exe_directory.string() + this->instances_location, data);
+    }
 }
 
 void backend::set_startup_program(const std::string& exe_name, const std::string& exe_path, const bool& enable) {
