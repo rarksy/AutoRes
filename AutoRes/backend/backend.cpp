@@ -13,6 +13,11 @@ backend::backend()
     this->active = true;
 }
 
+backend::~backend()
+{
+    this->active = false;
+}
+
 void backend::application_detection()
 {
     std::thread det_thread([this]
@@ -85,7 +90,7 @@ void backend::add_new_instance(const std::string& label, const std::string& exe_
     ml::json_write_data(this->exe_directory.string() + this->instances_location, data);
 }
 
-void backend::update_instance(const int& index) {
+void backend::update_instance(const int& index) const {
     nlohmann::json data = ml::json_get_data_from_file(this->exe_directory.string() + this->instances_location);
 
     if (index >= 0 && index < all_instances.size()) {
@@ -120,7 +125,7 @@ void backend::remove_instance(const int& index) {
     }
 }
 
-void backend::set_startup_program(const std::string& exe_name, const std::string& exe_path, const bool& enable) {
+void backend::set_startup_program(const std::string& exe_name, const std::string& exe_path, const bool& enable) { // i havnt played with registry before so thanks chatgpt
     // Define the registry path for startup programs
     HKEY hKey;
     const char* regPath = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
@@ -163,7 +168,7 @@ void backend::set_startup_program(const std::string& exe_name, const std::string
     RegCloseKey(hKey);
 }
 
-bool backend::change_resolution(const int& width, const int& height, const int& bits_per_pixel)
+bool backend::change_resolution(const int& width, const int& height, const int& bits_per_pixel) // i havnt played with modifying the display so thanks chatgpt 
 {
     DEVMODE dm;
     ZeroMemory(&dm, sizeof(dm));

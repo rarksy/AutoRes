@@ -2,7 +2,6 @@
 #include <filesystem>
 #include <vector>
 #include <string>
-
 #include "vec2.h"
 
 class backend
@@ -17,8 +16,6 @@ private:
         std::string exe_name;
 
         vec2 target_resolution;
-
-        unsigned exe_icon;
     };
 
     std::filesystem::path exe_directory;
@@ -29,16 +26,17 @@ public:
     vec2 default_resolution;
     
     std::vector<instance> all_instances;
-    int window_size_x;
-    int window_size_y;
+    int window_size_x = 0;
+    int window_size_y = 0;
     
     backend();
+    ~backend();
 
     void application_detection();
 
     void load_instances();
     void add_new_instance(const std::string& label, const std::string& exe_path, const std::string& exe_name, const int& res_x, const int& res_y);
-    void update_instance(const int& index);
+    void update_instance(const int& index) const;
     void remove_instance(const int& index);
 
     void set_startup_program(const std::string& exe_name, const std::string& exe_path, const bool& enable);

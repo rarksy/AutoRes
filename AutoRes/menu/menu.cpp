@@ -3,7 +3,6 @@
 #include "imgui/imgui_impl_opengl3.h"
 #include <glfw/glfw3.h>
 #include <Windows.h>
-
 #include "misc_lib.hpp"
 
 bool IsStartupProgramSet(const std::string& appName) {

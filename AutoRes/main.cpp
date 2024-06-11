@@ -4,7 +4,6 @@
 #include <imgui/imgui_impl_opengl3.h>
 #include <glfw/glfw3.h>
 #include <Windows.h>
-
 #include "Fonts.hpp"
 #include "menu/menu.h"
 
@@ -20,10 +19,6 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int)
     be.load_instances();
     be.application_detection();
 
-    ImGui::CreateContext();
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 330");
-
     auto& io = ImGui::GetIO();
 
     io.IniFilename = nullptr;
@@ -38,8 +33,6 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int)
 
         glfwSwapBuffers(window);
     }
-
-    be.active = false;
     
     glfwTerminate();
     ImGui_ImplGlfw_Shutdown();
