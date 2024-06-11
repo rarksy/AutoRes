@@ -61,10 +61,8 @@ void menu::show(backend& be)
         ImGui::SameLine();
 
         if (ImGui::Button("..."))
-        {
             exe_path = ml::open_file_dialog();
-        }
-
+        
         ImGui::BeginDisabled();
         std::string exe_name = std::filesystem::path(exe_path).filename().string();
         ImGui::InputText("Executable Name", &exe_name);

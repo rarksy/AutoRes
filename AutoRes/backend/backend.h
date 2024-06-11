@@ -8,7 +8,6 @@
 class backend
 {
 private:
-    
     struct instance
     {
         bool running = false;
