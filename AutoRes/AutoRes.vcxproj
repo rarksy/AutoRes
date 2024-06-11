@@ -195,6 +195,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
+    <Content Include="AutoRes.vcxproj.filters" />
     <Content Include="dep\glfw\lib\glew32s.lib" />
     <Content Include="dep\glfw\lib\glfw3.lib" />
   </ItemGroup>
