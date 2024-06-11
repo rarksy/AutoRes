@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <filesystem>
 #include <vector>
 #include <string>
 
@@ -21,7 +22,8 @@ private:
         unsigned exe_icon;
     };
 
-
+    std::filesystem::path exe_directory;
+    std::string instances_location = "\\data\\instances.json";
 
 public:
     bool active = false;
