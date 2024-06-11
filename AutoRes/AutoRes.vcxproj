@@ -173,6 +173,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="backend\backend.h" />
+    <ClInclude Include="dep\Fonts.hpp" />
     <ClInclude Include="dep\glfw\glfw3.h" />
     <ClInclude Include="dep\glfw\glfw3native.h" />
     <ClInclude Include="dep\glfw\gl\eglew.h" />

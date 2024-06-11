@@ -4,6 +4,8 @@
 #include <imgui/imgui_impl_opengl3.h>
 #include <glfw/glfw3.h>
 #include <Windows.h>
+
+#include "Fonts.hpp"
 #include "menu/menu.h"
 
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int)
@@ -22,7 +24,10 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int)
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
 
-    ImGui::GetIO().IniFilename = nullptr;
+    auto& io = ImGui::GetIO();
+
+    io.IniFilename = nullptr;
+    io.Fonts->AddFontFromMemoryCompressedTTF(nunito_data, nunito_size, 20.F);
 
     while (!glfwWindowShouldClose(window))
     {
