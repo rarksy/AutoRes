@@ -1,6 +1,7 @@
 ﻿#include "backend.h"
 #include <Windows.h>
 #include "misc_lib.hpp"
+#include "../windows/windows.h"
 
 backend::backend()
 {
@@ -30,12 +31,12 @@ void backend::application_detection()
 
                 if (exe_running && !inst.running)
                 {
-                    change_resolution(inst.target_resolution.x, inst.target_resolution.y);
+                    windows::change_resolution(inst.target_resolution.x, inst.target_resolution.y);
                     inst.running = true;
                 }
                 else if (!exe_running && inst.running)
                 {
-                    change_resolution(this->default_resolution.x, this->default_resolution.y);
+                    windows::change_resolution(this->default_resolution.x, this->default_resolution.y);
                     inst.running = false;
                 }
             }
@@ -73,7 +74,6 @@ void backend::add_new_instance(const std::string& label, const std::string& exe_
     new_instance.exe_path = exe_path;
     new_instance.exe_name = exe_name;
     new_instance.target_resolution = {res_x, res_y};
-    new_instance.exe_icon = 0;
 
     all_instances.push_back(new_instance);
 
@@ -123,74 +123,4 @@ void backend::remove_instance(const int& index) {
 
         ml::json_write_data(this->exe_directory.string() + this->instances_location, data);
     }
-}
-
-void backend::set_startup_program(const std::string& exe_name, const std::string& exe_path, const bool& enable) { // i havnt played with registry before so thanks chatgpt
-    // Define the registry path for startup programs
-    HKEY hKey;
-    const char* regPath = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
-
-    // Open the registry key
-    LONG result = RegOpenKeyExA(HKEY_CURRENT_USER, regPath, 0, KEY_SET_VALUE, &hKey);
-    if (result != ERROR_SUCCESS) {
-        std::cerr << "Error opening registry key: " << result << std::endl;
-        return;
-    }
-
-    if (enable) {
-        // Set the value in the registry key to enable startup
-        result = RegSetValueExA(
-            hKey,                    // Handle to the open key
-            exe_name.c_str(),         // Name of the value to set
-            0,                       // Reserved, must be zero
-            REG_SZ,                  // Type of data (string)
-            (const BYTE*)exe_path.c_str(), // Data to set
-            (DWORD)(exe_path.size() + 1)  // Size of the data
-        );
-
-        if (result != ERROR_SUCCESS) {
-            std::cerr << "Error setting registry value: " << result << std::endl;
-        } else {
-            std::cout << "Successfully set startup program." << std::endl;
-        }
-    } else {
-        // Delete the value from the registry key to disable startup
-        result = RegDeleteValueA(hKey, exe_name.c_str());
-
-        if (result != ERROR_SUCCESS) {
-            std::cerr << "Error deleting registry value: " << result << std::endl;
-        } else {
-            std::cout << "Successfully removed startup program." << std::endl;
-        }
-    }
-
-    // Close the registry key
-    RegCloseKey(hKey);
-}
-
-bool backend::change_resolution(const int& width, const int& height, const int& bits_per_pixel) // i havnt played with modifying the display so thanks chatgpt 
-{
-    DEVMODE dm;
-    ZeroMemory(&dm, sizeof(dm));
-    dm.dmSize = sizeof(dm);
-    dm.dmPelsWidth = width;
-    dm.dmPelsHeight = height;
-    dm.dmBitsPerPel = bits_per_pixel;
-    dm.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT | DM_BITSPERPEL;
-
-    LONG result = ChangeDisplaySettings(&dm, CDS_TEST);
-    if (result != DISP_CHANGE_SUCCESSFUL)
-    {
-        // Test failed, return false
-        return false;
-    }
-
-    result = ChangeDisplaySettings(&dm, 0);
-    if (result != DISP_CHANGE_SUCCESSFUL)
-    {
-        // Change failed, return false
-        return false;
-    }
-
-    return true;
 }

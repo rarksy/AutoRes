@@ -38,7 +38,4 @@ public:
     void add_new_instance(const std::string& label, const std::string& exe_path, const std::string& exe_name, const int& res_x, const int& res_y);
     void update_instance(const int& index) const;
     void remove_instance(const int& index);
-
-    void set_startup_program(const std::string& exe_name, const std::string& exe_path, const bool& enable);
-    bool change_resolution(const int& width, const int& height, const int& bits_per_pixel = 32);
 };

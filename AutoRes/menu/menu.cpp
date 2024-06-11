@@ -4,6 +4,7 @@
 #include <glfw/glfw3.h>
 #include <Windows.h>
 #include "misc_lib.hpp"
+#include "../windows/windows.h"
 
 bool IsStartupProgramSet(const std::string& appName) {
     HKEY hKey;
@@ -47,7 +48,7 @@ void menu::show(backend& be)
 
     static bool open_on_startup = IsStartupProgramSet("AutoRes");
     if (ImGui::Checkbox("Open On Startup", &open_on_startup))
-        be.set_startup_program("AutoRes", ml::get_exe_directory().string(), open_on_startup);
+        windows::set_startup_program("AutoRes", ml::get_exe_directory().string(), open_on_startup);
 
     if (ImGui::BeginPopupModal("Add New Instance", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove))
     {
