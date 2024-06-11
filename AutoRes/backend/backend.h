@@ -21,11 +21,11 @@ private:
         unsigned exe_icon;
     };
 
-    vec2 default_resolution;
 
 
 public:
     bool active = false;
+    vec2 default_resolution;
     
     std::vector<instance> all_instances;
     int window_size_x;
