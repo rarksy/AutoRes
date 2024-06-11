@@ -70,10 +70,10 @@ void menu::show(backend& be)
         ImGui::InputText("Executable Name", &exe_name);
         ImGui::EndDisabled();
 
-        static int res_x;
+        static int res_x = be.default_resolution.x;
         ImGui::InputInt("Target X Resolution", &res_x);
 
-        static int res_y;
+        static int res_y = be.default_resolution.y;
         ImGui::InputInt("Target Y Resolution", &res_y);
         
 
@@ -81,6 +81,12 @@ void menu::show(backend& be)
         {
             be.add_new_instance(label, exe_path, exe_name, res_x, res_y);
 
+            label.clear();
+            exe_path.clear();
+            exe_name.clear();
+            res_x = be.default_resolution.x;
+            res_y = be.default_resolution.y;
+            
             ImGui::CloseCurrentPopup();
         }
         
@@ -102,15 +108,14 @@ void menu::show(backend& be)
         ImGui::BeginDisabled();
         ImGui::SetNextItemWidth(100.F);
         const std::string instance_label = "##label" + std::to_string(i);
-        ImGui::InputTextWithHint(instance_label.c_str(), "Label", &all_instances[i].label);
+        ImGui::InputTextWithHint(instance_label.c_str(), "Label", &instance.label);
         ImGui::EndDisabled();
-            
-
+        
         ImGui::SameLine();
 
         ImGui::SetNextItemWidth(200.F);
         const std::string instance_exe_path = "##exe" + std::to_string(i);
-        if (ImGui::InputTextWithHint(instance_exe_path.c_str(), "Executable Directory", &all_instances[i].exe_path))
+        if (ImGui::InputTextWithHint(instance_exe_path.c_str(), "Executable Directory", &instance.exe_path))
             be.update_instance(i);
 
         ImGui::SameLine();
@@ -148,6 +153,5 @@ void menu::show(backend& be)
     }
     
     ImGui::EndChild();
-    
     ImGui::End();
 }
