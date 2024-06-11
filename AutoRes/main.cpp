@@ -12,7 +12,7 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int)
     if (!glfwInit())
         throw std::exception("failed to init glfw");
     
-    const auto window = glfwCreateWindow(550, 400, "AutoRes++", nullptr, nullptr);
+    const auto window = glfwCreateWindow(550, 400, "AutoRes", nullptr, nullptr);
     glfwMakeContextCurrent(window);
 
     backend be;
