@@ -1,6 +1,6 @@
 ﻿#include "windows.h"
-#include <Windows.h>
 #include <iostream>
+#include <Windows.h>
 
 bool windows::change_resolution(const int& width, const int& height, const int& bits_per_pixel) // i havnt played with modifying the display so thanks chatgpt 
 {

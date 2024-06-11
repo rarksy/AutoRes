@@ -20,7 +20,7 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int)
     be.application_detection();
 
     auto& io = ImGui::GetIO();
-
+    
     io.IniFilename = nullptr;
     io.Fonts->AddFontFromMemoryCompressedTTF(nunito_data, nunito_size, 20.F);
 
